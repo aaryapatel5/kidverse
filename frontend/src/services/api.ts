@@ -109,6 +109,81 @@ export async function apiLogin(username: string, password: string, userType: 'pa
   return data;
 }
 
+// ── Brevo Email OTP APIs ──
+export async function apiSendOtp(
+  email: string,
+  purpose: 'LOGIN' | 'REGISTER' | 'VERIFY' = 'VERIFY'
+): Promise<{ success: boolean; message: string; email: string }> {
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, purpose }),
+    });
+  } catch (netErr) {
+    throw new Error('Unable to connect to the backend server. Please verify MySQL and Spring Boot are running.');
+  }
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to send OTP email.');
+  }
+
+  return await response.json();
+}
+
+export async function apiVerifyOtp(
+  email: string,
+  otp: string
+): Promise<{ success: boolean; message: string; email: string; verified: boolean }> {
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp }),
+    });
+  } catch (netErr) {
+    throw new Error('Unable to connect to the backend server. Please verify MySQL and Spring Boot are running.');
+  }
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.message || 'Verification failed. Incorrect or expired code.');
+  }
+
+  return await response.json();
+}
+
+export async function apiLoginOtp(
+  email: string,
+  otp: string,
+  userType: 'parent' | 'child'
+): Promise<AuthResponse> {
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/auth/login-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp, userType }),
+    });
+  } catch (netErr) {
+    throw new Error('Unable to connect to the backend server. Please verify MySQL and Spring Boot are running.');
+  }
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.message || 'OTP Login failed.');
+  }
+
+  const data: AuthResponse = await response.json();
+  if (data.token) {
+    setAuthToken(data.token);
+  }
+  return data;
+}
+
 export async function apiRegister(
   username: string,
   password: string,
