@@ -1,0 +1,54 @@
+# ========================================================
+# KidVerse Full-Stack Project - .gitignore
+# ========================================================
+
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# Build & compiled outputs
+dist/
+frontend/dist/
+target/
+backend/target/
+*.class
+*.jar
+*.war
+
+# Local database binary files & downloaded standalone tools
+mysql_data/
+tools/
+
+# Environment variables & local configuration
+.env
+.env.local
+.env.*.local
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+backend/.env
+backend/.env.local
+!.env.example
+!frontend/.env.example
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs & temp files
+*.log
+logs/
+temp/
+tmp/
